@@ -1,1 +1,26 @@
-JavaScript Utils provides some very simple features for JavaScript developers to use as a starting point for adding tooling to their scripts. 
+JavaScript Utils provides some very simple features for JavaScript developers to use as a starting point for adding tooling to their scripts. A new namespace is created (DevUtil) but there is no reason not to slurp this into your own scripts. These ideas come from a talk on Industrial Strength JavaScript given at the Rich Web Experience 2008, which was based on work done for Orbitz. I'm pretty sure this is a completely unique implementation. 
+
+DevUtil.Profiler
+================
+
+This singleton is fundamentally an augmented array of augmented strings. Two methods are added:
+
+DevUtil.Profiler.start(label) starts a named profiler. If you restart a named profiler, a warning is logged and the profiler is restarted.
+DevUtil.Profiler.stop(label) stops the named profiler. If the profiler doesn't exist, a warning is logged. 
+
+Once a profiler is stopped, an new string is added to the Profiler array formatted as: "<label>: Elapsed Time ###sec." where <label> is replaced with the appropriate value sent to start() and stop(). In addition 4 properties are added to the string which can be used for more sophisticated handling of the results: label is the label passed to start() and stop(), startTime is the javascript date object created when start() was called, endTime is the javascript date object created when stop() was called, elapsedTime is the number of seconds between the startTime and endTime. 
+
+Normally if you want to see the results of the profiler, you can treat it like an array of strings and do the following (say using FireBug's or FireBug Lite's console):
+
+console.log(DevUtil.Profiler.join("\n"))
+
+DevUtil.Log
+===========
+
+This singleton allows you to place permanent log statements in you javascript (something that greatly speeds up debugging later). It is expected that two versions of this will exist, one for Development the other for production where the logging functions become empty functions. This allows us to leave the logging function in place without having anything recorded. 
+
+Like the Profiler, this is implemented as an augmented array of augmented strings.
+
+Very simply call one of DevUtil.Log.debug(msg), DevUtil.Log.info(msg),  DevUtil.Log.warning(msg), DevUtil.Log.error(msg).
+
+Every time these are called a string is added to the Log array with the following format: "<level>|<time stamp>|<message>". To the string the following properties are added: level is the log level (debug, warning, etc), time is the JavaScript date object created when the message was logged, message is the text of the message passed in the method call.  Like Profiler, you can treat the Log singleton as an array (which it is) and join its members as strings (which they are) or loop through them and create something from the parts. 
